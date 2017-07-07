@@ -15,7 +15,7 @@ set second=%time:~6,2%
 set ms=%time:~9,2%
 
 @ rem if %hour:~1,1% LSS 10 set hour=0%hour:~1,1%
-if %hour:~0,1%==" " set hour=0%hour:~1,1%
+if "%hour:~0,1%"==" " set hour=0%hour:~1,1%
 
 set today=%year%%month%%day%
 set now_time=%hour%%minute%%second%
