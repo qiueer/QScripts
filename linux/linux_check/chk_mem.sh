@@ -9,9 +9,9 @@ debug=0
 usage()
 {
         echo "usage: $(basename $0) [-p:m:d]"
-		echo "NAME"
-		echo "	$(basename $0) - Check if memory meets requirements"
-		echo "SYNOPSIS"
+	echo "NAME"
+	echo "	$(basename $0) - Check if memory meets requirements"
+	echo "SYNOPSIS"
         echo "	-p the minimum available memory check, by percent"
         echo "	-m the minimum available memory check, by mega"
         echo "	-d debug"
