@@ -23,7 +23,7 @@ do
         case $opt in
                 p) percent=$OPTARG ;;
                 m) mega=$OPTARG ;;
-				d) debug=1 ;;
+		d) debug=1 ;;
                 *) usage;;
         esac
 done
