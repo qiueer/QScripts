@@ -54,7 +54,7 @@ def main():
                 
             while not files:
                 files = raw_input(u"文件或目录(默认是当前目录下的tools文件夹): ")
-                if not files or str(files).strip():
+                if not files or str(files).strip() == "":
                     files = "tools"
 
             iphosts= re.split("[,|;]", iphost)

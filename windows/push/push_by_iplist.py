@@ -51,12 +51,12 @@ def main():
             (iplist,files) = (None, None)
             while not iplist:
                 iplist = raw_input(u"iplist文件(默认当前目录iplist.conf): ")
-                if not iplist or str(iplist).strip():
+                if not iplist or str(iplist).strip() == "":
                     iplist = "iplist.conf"
 
             while not files:
                 files = raw_input(u"文件或目录(默认是当前目录下的tools文件夹): ")
-                if not files or str(files).strip():
+                if not files or str(files).strip() == "":
                     files = "tools"
                     
             if not os.path.exists(iplist):
