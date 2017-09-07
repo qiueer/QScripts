@@ -9,6 +9,7 @@ import datetime
 import traceback
 import tarfile
 from optparse import OptionParser
+import socket
 
 reload(sys) 
 sys.setdefaultencoding('GBK')
@@ -38,8 +39,8 @@ def main():
     rp = get_realpath()
     av_disk = get_available_disk()
     try:
-        
-        usernames = ["system-admin", ".\system-admin"]
+        hostname = socket.gethostname()
+        usernames = ["system-admin", "%s\system-admin"%(hostname)]
         sharenames = ["d$", "e$"]
         destdir = "%s:\qiujingqin" % (av_disk)
         while True:

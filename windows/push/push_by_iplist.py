@@ -9,6 +9,7 @@ import datetime
 import traceback
 import tarfile
 from optparse import OptionParser
+import socket
 
 reload(sys) 
 sys.setdefaultencoding('GBK')
@@ -30,10 +31,7 @@ def get_available_disk():
 def help():
     print u"""
     本工具实现将文件推送远程服务器，仅适合在windows环境下使用。
-    1）默认配置
-        iplist文件，默认使用当前目录下的iplist.conf文件
-        推送文件，默认使用当前目录下的tools文件夹
-    2）iplist.conf文件格式要求
+    iplist.conf文件内容要求：
         ip password
         ip password
         ......
@@ -45,62 +43,48 @@ def main():
     rp = get_realpath()
     av_disk = get_available_disk()
     try:
-        
-        usernames = ["system-admin", ".\system-admin"]
+        hostname = socket.gethostname()
+        usernames = ["%s\system-admin"%(hostname),"system-admin"]
         sharenames = ["d$", "e$"]
         destdir = "%s:\qiujingqin" % (av_disk)
         while True:
             (iplist,files) = (None, None)
             while not iplist:
-                iplist = raw_input(u"iplist文件: ")
-                if not iplist or str(iplist).strip() == "":
+                iplist = raw_input(u"iplist文件(默认当前目录iplist.conf): ")
+                if not iplist or str(iplist).strip():
                     iplist = "iplist.conf"
 
             while not files:
-                files = raw_input(u"文件或目录: ")
-                if not files or str(files).strip() == "":
+                files = raw_input(u"文件或目录(默认是当前目录下的tools文件夹): ")
+                if not files or str(files).strip():
                     files = "tools"
                     
             if not os.path.exists(iplist):
-                print u"iplist文件不存在: %s" % (iplist)
-                continue
+                print "iplist文件不存在: %s" % (iplist)
+                sys.exit(1)
             if not os.path.exists(files):
-                print u"files文件不存在: %s" % (files)
-                continue
+                print "files文件不存在: %s" % (files)
+                sys.exit(1)
             
             fd = open(iplist, "r")
-            alllines = fd.readlines()
-            fd.close()
             now = datetime.datetime.now()
             nowstr = now.strftime('%Y%m%d-%H%M%S')
-            
-            print "".join(["#"]*60)
-            print " IPLIST:    %s" % (iplist)
-            print " FILES:     %s" % (files)
-            print " USERNAME:  %s" % (usernames)
-            print " SHARENAME: %s" % (sharenames)
-            print "".join(["#"]*60)
-            confirm = raw_input(u"配置如上，是否确认(YES/Y/NO/N)?: ")
-            confirm = str(confirm).strip().upper()
-            while confirm not in ["YES","Y","NO","N"]:
-                confirm = raw_input(u"配置如上，是否确认(YES/Y/NO/N)?: ")
-                confirm = str(confirm).strip().upper()
-            if confirm in ["NO","N"]:
-                continue
-                
-            for line in alllines:
+            for line in fd:
                 if not line or str(line).strip().startswith("#") or str(line).strip() == "":continue
                 iphost_password= re.split("[,|;|\s]+", line)
                 if not iphost_password or len(iphost_password) < 2:continue
                 iphost = iphost_password[0]
                 password = iphost_password[1]
 
-                print "\n\r\n\r---------------------------- [%s] BEGIN -----------------------" % (iphost)
-                print "".join(["*"]*30)
+                print "\r"
+                print "".join(["#"]*60)
                 print "[INFO]"
-                print " IPHOST:    %s" % (iphost)
+                print " IPHOST:   %s" % (iphost)
                 print " PASSWORD:  %s" % (password)
-                print "".join(["*"]*30)
+                print " FILES:     %s" % (files)
+                print " USERNAME:  %s" % (usernames)
+                print " SHARENAME: %s" % (sharenames)
+                print "".join(["#"]*60)
 
                 cmds = ["net use %s: /delete /y" %(av_disk)]
                 for username in usernames:
@@ -113,7 +97,7 @@ def main():
                 for cmdstr in cmds:
                     print "-->> %s" % (cmdstr)
                     os.system(cmdstr)
-            print u"---------------------------- 华丽的分割线 [%s] END -----------------------\n\r" % (iphost)
+            print u"---------------------------- 华丽的分割线 -----------------------\r"
 
     except Exception as expt:
         print traceback.format_exc()
